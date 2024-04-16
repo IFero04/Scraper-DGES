@@ -1,16 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import os
-import time
-
-def clear_console():
-    os.system('cls' if os.name == 'nt' else 'clear')
-def add_dot_every_second(escola):
-    string = f'A Procurar Escolas de {escola} '
-    for _ in range(5): 
-        string += "."
-        print(string, end="\r")
-        time.sleep(1)
+from console import clear_console, add_dot_every_second
+from csv_save import export_csv, Item
 
 URL = "https://dges.gov.pt/coloc/2023/"
 
@@ -90,10 +81,10 @@ def get_colocados(page, selected_option):
     print(response.content)
 
 
-def main():
+def main1():
     get_colocados('ccol1listaredir.asp', '0140')
 
-def main1():
+def main():
     ensinos = get_ensino('col1listas.asp')
     print('\tENSIONOS ENCONTRADOS')
     for ensino in ensinos:
@@ -105,7 +96,8 @@ def main1():
 
     clear_console()
     escolas = get_escolas(ensinos[escolha-1]["link"])
-    add_dot_every_second(ensinos[escolha-1]["nome"])
+    export_csv([Item(escola["id"], escola["nome"]) for escola in escolas], 'escolas.csv')
+    add_dot_every_second(f'A Procurar Escolas de {ensinos[escolha-1]["nome"]} ')
 
     clear_console()
     print('\tESCOLAS ENCONTRADAS')
