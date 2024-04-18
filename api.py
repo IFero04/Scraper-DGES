@@ -82,9 +82,11 @@ def get_cursos(page, options):
 
             for value, text in values_texts:
                 text = extract_cursos(text)
+                if "-" in text:
+                    text = text.split("-")[1].strip()
                 cursos.append({
                     "id": value,
-                    "nome": text.split("-")[1].strip()
+                    "nome": text
                 })
 
     else:
